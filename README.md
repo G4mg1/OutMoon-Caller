@@ -160,14 +160,15 @@ G2L["12"]["Position"] = UDim2.new(0.06295, 0, 0, 0);
 
 -- StarterGui.ScreenGui.Main.Keyframe.Login.Enter
 G2L["13"] = Instance.new("TextBox", G2L["11"]);
-G2L["13"]["CursorPosition"] = -1;
 G2L["13"]["Name"] = [[Enter]];
 G2L["13"]["BorderSizePixel"] = 0;
-G2L["13"]["TextSize"] = 14;
+G2L["13"]["TextWrapped"] = true;
+G2L["13"]["TextSize"] = 12;
 G2L["13"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 G2L["13"]["BackgroundColor3"] = Color3.fromRGB(25, 25, 25);
 G2L["13"]["FontFace"] = Font.new([[rbxasset://fonts/families/ComicNeueAngular.json]], Enum.FontWeight.Bold, Enum.FontStyle.Italic);
-G2L["13"]["PlaceholderText"] = [[enter the key]];
+G2L["13"]["ClearTextOnFocus"] = false;
+G2L["13"]["PlaceholderText"] = [[Enter your key ---- https://www.roblox.com/game-pass/1587354940]];
 G2L["13"]["Size"] = UDim2.new(0, 365, 0, 38);
 G2L["13"]["Position"] = UDim2.new(0.25787, 0, 0.66879, 0);
 G2L["13"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
@@ -319,14 +320,14 @@ G2L["27"]["Name"] = [[Buy]];
 G2L["27"]["Position"] = UDim2.new(0.22452, 0, 0.01923, 0);
 
 
--- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Buy.UICorner
-G2L["28"] = Instance.new("UICorner", G2L["27"]);
-G2L["28"]["CornerRadius"] = UDim.new(0, 15);
-
-
 -- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Buy.LocalScript
-G2L["29"] = Instance.new("LocalScript", G2L["27"]);
+G2L["28"] = Instance.new("LocalScript", G2L["27"]);
 
+
+
+-- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Buy.UICorner
+G2L["29"] = Instance.new("UICorner", G2L["27"]);
+G2L["29"]["CornerRadius"] = UDim.new(0, 15);
 
 
 -- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Buy.UIListLayout
@@ -928,25 +929,37 @@ local MarketplaceService = game:GetService("MarketplaceService")
 
 function M.PromptPurchase(player)
 
-	MarketplaceService:PromptGamePassPurchase(player, GamepassID)
-
-
-	local connection
-	connection = MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(p, passId, wasPurchased)
-		if p == player and passId == GamepassID then
-			if wasPurchased then
-				script.Parent.Parent.Enter.Text = "PremiumKeyLogin!@" .. math.random(100, 1000) .. player.Name
-				script.Parent.Parent.Buttons.Buy.Visible = false
-				script.Parent.Parent.Buttons.Check:TweenSize(UDim2.new(0, 250 , 0 , 33))
-
-
-			end
-			connection:Disconnect()
-		end
+	local succes, err = pcall(function()
+		MarketplaceService:PromptGamePassPurchase(player, GamepassID)
 	end)
+
+
+	if succes then
+		local connection
+		connection = MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(p, passId, wasPurchased)
+			if p == player and passId == GamepassID then
+				if wasPurchased then
+					script.Parent.Parent.Enter.Text = "PremiumKeyLogin!@" .. math.random(100, 1000) .. player.Name
+					script.Parent.Parent.Buttons.Buy.Visible = false
+					script.Parent.Parent.Buttons.Check:TweenSize(UDim2.new(0, 250 , 0 , 33))
+
+
+				end
+				connection:Disconnect()
+			end
+		end)
+		
+	else
+		local GuiService = game:GetService("GuiService")
+		local link = "https://www.roblox.com/game-pass/1587354940"
+		GuiService:SetClipboard(link)
+		print("Link copied!")
+
+	end
 end
 
 return M
+
 
 end;
 };
@@ -997,7 +1010,7 @@ local script = G2L["1a"];
 		end
 	end)
 	
-	
+	unw.Check(Textbox, player)
 end;
 task.spawn(C_1a);
 -- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Check.UIStroke.UIGradient.LocalScript
@@ -1023,8 +1036,8 @@ local script = G2L["25"];
 end;
 task.spawn(C_25);
 -- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Buy.LocalScript
-local function C_29()
-local script = G2L["29"];
+local function C_28()
+local script = G2L["28"];
 	local player = game.Players.LocalPlayer
 	local ok = require(script.Parent.Parent.Parent.API.PurchaseKey)
 	
@@ -1041,7 +1054,7 @@ local script = G2L["29"];
 	
 	
 end;
-task.spawn(C_29);
+task.spawn(C_28);
 -- StarterGui.ScreenGui.Main.Keyframe.Login.Buttons.Buy.UIStroke.UIGradient.LocalScript
 local function C_2e()
 local script = G2L["2e"];
